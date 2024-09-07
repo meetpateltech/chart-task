@@ -3,8 +3,11 @@ version: '3.8'
 services:
   web:
     build: .
-    command: gunicorn --config gunicorn.conf.py chart_api_project.wsgi:application
+    command: python manage.py runserver 0.0.0.0:8000
     volumes:
-      - .:/code
+      - .:/usr/src/app
     ports:
       - "8000:8000"
+    environment:
+      - PYTHONDONTWRITEBYTECODE=1
+      - PYTHONUNBUFFERED=1

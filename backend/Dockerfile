@@ -1,30 +1,24 @@
-# Use an official Python runtime as a parent image
-FROM python:3.8-slim
+# Use the official Python image as a base image
+FROM python:3.9-slim
 
-# Set the working directory in the container
-WORKDIR /usr/src/app
-
-# Install system dependencies
-RUN apt-get update && apt-get install -y libpq-dev gcc
-
-# Copy the requirements.txt file into the container (you'll need to generate this)
-COPY requirements.txt ./
-
-# Install any needed packages specified in requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Copy the rest of the application into the container
-COPY . .
-
-# Set environment variables (can also be done in Render's dashboard)
+# Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
-# Collect static files (for production)
-RUN python manage.py collectstatic --noinput
+# Set working directory
+WORKDIR /app
 
-# Expose the port Render provides
-EXPOSE $PORT
+# Copy the requirements.txt to the container
+COPY requirements.txt /app/
 
-# Run the Django development server, binding to the dynamically assigned port
-CMD ["python", "manage.py", "runserver", "0.0.0.0:$PORT"]
+# Install dependencies
+RUN pip install --upgrade pip && pip install -r requirements.txt
+
+# Copy the entire Django project into the working directory
+COPY . /app/
+
+# Expose port 8000 to the host
+EXPOSE 8000
+
+# Run Django's development server
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

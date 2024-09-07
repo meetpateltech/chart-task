@@ -10,4 +10,8 @@ RUN pip install -r requirements.txt
 
 COPY . /code/
 
-CMD ["gunicorn", "--config", "gunicorn.conf.py", "chart_api_project.wsgi:application"]
+# Add this line to print Python version and installed packages
+RUN python --version && pip list
+
+# Modify the CMD to print any errors
+CMD gunicorn --config gunicorn.conf.py chart_api_project.wsgi:application || (echo "Gunicorn failed to start" && cat /var/log/gunicorn.log)

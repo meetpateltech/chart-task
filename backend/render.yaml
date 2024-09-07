@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: django-chart-api
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn --config gunicorn.conf.py chart_api_project.wsgi:application
